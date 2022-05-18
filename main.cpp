@@ -136,5 +136,77 @@ void Shell(vector<int> &arr) {
     }
 }
 
+void merge( const vector<int> &a, const vector<int> &b, vector<int> &c) {
+    int i = 0, j = 0;
+    while (i < a.size() && j < b.size()) {
+        if (a[i] <= b[j])  { c[i + j] = a[i]; ++i; }
+        else { c[i + j] = b[j]; ++j; }
+    }
+    for (; i < a.size(); ++i) c[i + j] = a[i];
+    for (; j < b.size(); ++j) c[i + j] = b[j];
+}
+
+void merge_sort(vector<int> &a) {
+    if (a.size() <= 1) return;
+    vector<int> b(a.size() / 2);
+    vector<int> c(a.size()- a.size() / 2);
+    int i = 0;
+    for (; i < b.size(); ++i)  b[i] = a[i];
+    for (; i < a.size(); ++i)  c[i - b.size()] = a[i];
+    merge_sort(b);
+    merge_sort(c);
+    merge(c, b, a);
+}
+
+void count_sort(vector<int> &a) {
+    int m = 0;
+    for (int i = 0; i < a.size(); ++i) {
+        if (a[i] > m) m = a[i];
+    }
+
+    vector<int> cnt(m + 1, 0);
+    for (int i = 0; i < a.size(); ++i) {
+        cnt[a[i]]++;
+    }
+
+    int k = 0;
+    for (int i = 0; i < cnt.size(); ++i) {
+        for (int j = 0; j < cnt[i]; ++j) {
+            a[k++] = i;
+        }
+    }
+}
 
 
+void bucket_sort(vector<int> &a) {
+
+    int maxValue = a[0];
+    int minValue = a[0];
+
+    for (int i = 1; i < a.size(); i++) {
+        if (a[i] > maxValue)
+            maxValue = a[i];
+
+        if (a[i] < minValue)
+            minValue = a[i];
+    }
+
+    int n = 5;
+    int k = (maxValue - minValue) / (n - 1);
+    vector<vector<int>> b(n);
+    for (int i = 0; i < a.size(); ++i) {
+        b[((a[i] - minValue) / k)].push_back(a[i]);
+    }
+
+    for (int i = 0; i < n; i++)
+        sort(b[i].begin(), b[i].end());
+
+    int index = 0;
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < b[i].size(); j++) {
+            a[index++] = b[i][j];
+        }
+    }
+}
+
+int main() 
